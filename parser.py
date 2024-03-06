@@ -1,27 +1,23 @@
+import re
+
 def text_extractor(infile):
     output, output_text = [], []
     for line in infile:
-        # handle spaces
-        line1 = ','.join(line.split())
-        # handle commas
-        line2 = list(map(str.strip, line1.split(',')))
-        # remove empty strings from list
-        line3 = [x for x in line2 if x]
-        if line3 != []:
-            output_text.append(line3)
-            line4 = string_to_number_in_list(line3)
-            output.append(line4)
+        x = re.findall(r'[^\s,]+', line)
+        if x != []:
+            output.append(str_to_num_in_list(x))
+            output_text.append(x)
     return output, output_text
 
-def string_to_number_in_list(line):
+def str_to_num_in_list(input):
     output = []
-    for x in line:
+    for x in input:
         try:
-            converted_value = float(x)
-            if converted_value.is_integer():
-                output.append(int(converted_value))
+            val = float(x)
+            if val.is_integer():
+                output.append(int(val))
             else:
-                output.append(converted_value)
+                output.append(val)
         except ValueError:
             output.append(x)
     return output
@@ -32,5 +28,4 @@ def text_writer(input, outfile):
 
 with open('./textparser/test.dat','rt') as infile, open('./textparser/test.out','wt') as outfile:
     output, output_text = text_extractor(infile)
-    print(output)
     text_writer(output_text,outfile)
